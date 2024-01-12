@@ -1,0 +1,6 @@
+@MangaApi_HostAddress = http://localhost:5229
+
+GET {{MangaApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
