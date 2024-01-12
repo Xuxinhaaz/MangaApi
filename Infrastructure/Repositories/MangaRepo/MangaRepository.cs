@@ -2,9 +2,10 @@ using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Models.Mangas;
 using MangaApi.Domain.Models.Tags;
+using MangaApi.Domain.Repositories.MangaRepo;
 using Microsoft.EntityFrameworkCore;
 
-namespace MangaApi.Application.Repositories.MangaRepo;
+namespace MangaApi.Infrastructure.Repositories.MangaRepo;
 
 public class MangaRepository : IMangaRepository
 {

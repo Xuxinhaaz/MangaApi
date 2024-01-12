@@ -21,30 +21,33 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Animes\" />
-      <Folder Include="Controllers\Mangakas\" />
-      <Folder Include="Controllers\Users\" />
       <Folder Include="Domain\Models\Animes\" />
       <Folder Include="Domain\Models\Mangakas\" />
       <Folder Include="Domain\Models\Users\" />
+      <Folder Include="Infrastructure\" />
+      <Folder Include="Presentation\" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="MangaApi.http" />
       <None Remove="Application\Services\Validators\ViewModelsValidator\**" />
+      <None Remove="Controllers\Mangakas\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="Application\ViewModels\MangasViewModel\PagesViewModel\CollectionPagesViewModel.cs" />
       <Compile Remove="Application\Services\Validators\ViewModelsValidator\**" />
+      <Compile Remove="Controllers\Mangakas\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Application\Services\Validators\ViewModelsValidator\**" />
+      <EmbeddedResource Remove="Controllers\Mangakas\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Remove="Application\Services\Validators\ViewModelsValidator\**" />
+      <Content Remove="Controllers\Mangakas\**" />
     </ItemGroup>
 
 </Project>

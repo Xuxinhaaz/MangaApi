@@ -21,7 +21,7 @@ public interface IMangaController
     Task<IActionResult> MangasTagGet( [FromHeader] string authorization );
 
     [HttpGet("/manga/page/{id}")]
-    Task<IActionResult> MangaPageById( [FromHeader] string authorization, [FromRoute] string id, [FromQuery] int pageNumber); 
+    Task<IActionResult> MangaPageById( [FromRoute] string id, [FromQuery] int pageNumber); 
     
     [HttpGet("/manga/pages/{id}")]
     Task<IActionResult> MangaPages( [FromHeader] string authorization, [FromRoute] string id);

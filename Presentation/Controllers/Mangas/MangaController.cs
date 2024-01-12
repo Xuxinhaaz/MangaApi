@@ -1,21 +1,15 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using FluentValidation.Results;
-using MangaApi.Application.Repositories.MangaRepo;
-using MangaApi.Application.Repositories.MangaRepo.PagesRepo;
 using MangaApi.Application.Services.Validators;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
+using MangaApi.Controllers.Mangas;
 using MangaApi.Domain.Data;
-using MangaApi.Domain.Models.Mangas;
-using MangaApi.Domain.Models.Tags;
-using Microsoft.AspNetCore.Http.HttpResults;
+using MangaApi.Domain.Repositories.MangaRepo;
+using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using PageModel = MangaApi.Domain.Models.Mangas.PageModel;
 
-namespace MangaApi.Controllers.Mangas;
+namespace MangaApi.Presentation.Controllers.Mangas;
 
 [ApiController]
 public class MangaController : IMangaController
@@ -87,7 +81,7 @@ public class MangaController : IMangaController
     }
 
     [HttpGet("/api/v1/manga/page/{id}")]
-    public Task<IActionResult> MangaPageById(string authorization, string id, int pageNumber)
+    public Task<IActionResult> MangaPageById([FromRoute] string id, [FromQuery] int pageNumber)
     {
         throw new NotImplementedException();
     }

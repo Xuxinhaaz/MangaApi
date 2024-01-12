@@ -1,7 +1,9 @@
-using MangaApi.Application.Repositories.MangaRepo;
-using MangaApi.Application.Repositories.MangaRepo.PagesRepo;
 using MangaApi.Application.Services.Validators;
 using MangaApi.Domain.Data;
+using MangaApi.Domain.Repositories.MangaRepo;
+using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
+using MangaApi.Infrastructure.Repositories.MangaRepo;
+using MangaApi.Infrastructure.Repositories.MangaRepo.PagesRepo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

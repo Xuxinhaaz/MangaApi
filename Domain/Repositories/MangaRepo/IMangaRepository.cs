@@ -1,7 +1,7 @@
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Models.Mangas;
 
-namespace MangaApi.Application.Repositories.MangaRepo;
+namespace MangaApi.Domain.Repositories.MangaRepo;
 
 public interface IMangaRepository
 {
