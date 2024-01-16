@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MangaApi.Domain.Models.Mangas;
+namespace MangaApi.Domain.Models.Manga;
 
 public class CollectionPage
 {
@@ -10,7 +9,7 @@ public class CollectionPage
     public string? CollectionId { get; set; }
     [ForeignKey("Id")]
     public string? MangaId { get; set; }
-    public List<PageModel>? PageModels = [];
+    public List<PageModel>? PageModels { get; set; }
 }
 public class PageModel
 {
@@ -19,5 +18,6 @@ public class PageModel
     [ForeignKey("CollectionId")]
     public string? CollectionId { get; set; }
     public string? PageName { get; set; }
-    public string? MangaUrl { get; set; }
+    [NotMapped]
+    public IFormFile? MangaPage { get; set; }
 }

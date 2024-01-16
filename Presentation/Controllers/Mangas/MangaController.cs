@@ -1,8 +1,6 @@
 using FluentValidation.Results;
 using MangaApi.Application.Services.Validators;
 using MangaApi.Application.ViewModels.MangasViewModel;
-using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
-using MangaApi.Controllers.Mangas;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Repositories.MangaRepo;
 using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
@@ -12,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MangaApi.Presentation.Controllers.Mangas;
 
 [ApiController]
-public class MangaController : IMangaController
+public class MangaController
 {
     private readonly IValidator _validator;
     private readonly IMangaRepository _mangaRepository;
@@ -53,7 +51,7 @@ public class MangaController : IMangaController
     public async Task<IActionResult> MangaGetById(  [FromRoute] string id)
     {
         if (string.IsNullOrEmpty(id))
-            return new BadRequestObjectResult("Id must not be null/empty!");
+            return new BadRequestObjectResult("Id must not be empty");
         
         return new OkObjectResult(new
         {
@@ -66,7 +64,7 @@ public class MangaController : IMangaController
     public async Task<IActionResult> MangaTagsFilterByOneTag( [FromHeader] string authorization, [FromQuery] string tag)
     {
         if (string.IsNullOrEmpty(tag))
-            return new BadRequestObjectResult("tag must not be null/empty!");
+            return new BadRequestObjectResult("tag must not be empty!");
 
         return new OkObjectResult(new
         {
@@ -79,21 +77,9 @@ public class MangaController : IMangaController
     {
         throw new NotImplementedException();
     }
-
-    [HttpGet("/api/v1/manga/page/{id}")]
-    public Task<IActionResult> MangaPageById([FromRoute] string id, [FromQuery] int pageNumber)
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpGet("/api/v1/manga/pages/{id}")]
-    public Task<IActionResult> MangaPages(string authorization, string id)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     [HttpPost("/api/v1/Mangas")]
-    public async Task<IActionResult> MangaPost( [FromHeader] string authorization, [FromBody] MangasViewModel model)
+    public async Task<IActionResult> MangaPost( [FromHeader] string authorization, [FromForm] MangasViewModel model)
     {
         Dictionary<string, dynamic> errors = new();
         
@@ -107,29 +93,21 @@ public class MangaController : IMangaController
         return new OkObjectResult(newManga);
     }
 
-    [HttpPost("/api/v1/Manga/pages/{id}")]
-    public async Task<IActionResult> MangaPagesPost([FromHeader] string authorization, [FromRoute] string id, [FromBody] CollectionPageViewModel model)
-    {
-        Dictionary<string, dynamic> errors = new();
-        var responseValidation = await _validator.ValidateCollectionPagesViewModel(model);
-        if (!responseValidation.IsValid)
-            return new BadRequestObjectResult(errors["Errors"] = responseValidation.Errors.ToList());
-        
-        var fulManga = await _pageRepository.GeneratePages(model, id);
-        
-        return new OkObjectResult(new
-        {
-            fulManga,
-            fulManga.CollectionPage?.PageModels
-        });
-    }
-
-
 
     [HttpPost("/api/v1/Mangas/Search")]
-    public Task<IActionResult> MangaSearch(string authorization, string search)
+    public async Task<IActionResult> MangaSearch( 
+        [FromHeader] string authorization, 
+        [FromQuery] string search, 
+        [FromQuery] int pageNumber
+        )
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(search))
+            return new BadRequestObjectResult("search param must not be empty.");
+
+        return new OkObjectResult(new
+        {
+            mangas = await _mangaRepository.SearchManga(search, pageNumber)
+        });
     }
 
     [HttpDelete("/api/v1/Mangas/DeleteMax")]

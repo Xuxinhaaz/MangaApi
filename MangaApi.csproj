@@ -22,32 +22,41 @@
 
     <ItemGroup>
       <Folder Include="Domain\Models\Animes\" />
-      <Folder Include="Domain\Models\Mangakas\" />
-      <Folder Include="Domain\Models\Users\" />
-      <Folder Include="Infrastructure\" />
       <Folder Include="Presentation\" />
+      <Folder Include="Storage\MangaPages\" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="MangaApi.http" />
       <None Remove="Application\Services\Validators\ViewModelsValidator\**" />
       <None Remove="Controllers\Mangakas\**" />
+      <None Remove="Domain\Models\Mangakas\**" />
+      <None Remove="Storage\MangaPages\Jujustu Kaisen\**" />
+      <None Remove="Storage\Captura de tela 2024-01-11 010055.png" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="Application\ViewModels\MangasViewModel\PagesViewModel\CollectionPagesViewModel.cs" />
       <Compile Remove="Application\Services\Validators\ViewModelsValidator\**" />
       <Compile Remove="Controllers\Mangakas\**" />
+      <Compile Remove="Domain\Models\Mangakas\**" />
+      <Compile Remove="Presentation\Controllers\Mangas\IMangaController.cs" />
+      <Compile Remove="Storage\MangaPages\Jujustu Kaisen\**" />
+      <Compile Remove="Presentation\ViewModels\MangasViewModel\PagesViewModel\CollectionPagesViewModel.cs" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Application\Services\Validators\ViewModelsValidator\**" />
       <EmbeddedResource Remove="Controllers\Mangakas\**" />
+      <EmbeddedResource Remove="Domain\Models\Mangakas\**" />
+      <EmbeddedResource Remove="Storage\MangaPages\Jujustu Kaisen\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Remove="Application\Services\Validators\ViewModelsValidator\**" />
       <Content Remove="Controllers\Mangakas\**" />
+      <Content Remove="Domain\Models\Mangakas\**" />
+      <Content Remove="Storage\MangaPages\Jujustu Kaisen\**" />
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using MangaApi.Domain.Repositories.MangaRepo;
 using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 using MangaApi.Infrastructure.Repositories.MangaRepo;
 using MangaApi.Infrastructure.Repositories.MangaRepo.PagesRepo;
+using MangaApi.Infrastructure.Services.Validator;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 builder.Services.AddScoped<IMangaRepository, MangaRepository>();
 builder.Services.AddScoped<IPageRepository, PageRepository>();
 builder.Services.AddScoped<IValidator, Validator>();
+builder.Services.AddLogging(x => x.AddConsole());
 
 builder.Services.AddControllers();
 

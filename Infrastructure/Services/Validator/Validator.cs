@@ -1,10 +1,11 @@
 using FluentValidation.Results;
-using MangaApi.Application.Services.Validators.ModelsValidator.Mangas;
-using MangaApi.Application.Services.Validators.ModelsValidator.Pages;
+using MangaApi.Application.Services.Validators;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
+using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Mangas;
+using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Pages;
 
-namespace MangaApi.Application.Services.Validators;
+namespace MangaApi.Infrastructure.Services.Validator;
 
 public class Validator : IValidator
 {

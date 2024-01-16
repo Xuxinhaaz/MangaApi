@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
-using System.Numerics;
-using System.Runtime.InteropServices.JavaScript;
+using System.ComponentModel.DataAnnotations.Schema;
 using MangaApi.Domain.Models.Tags;
 
-namespace MangaApi.Domain.Models.Mangas;
+namespace MangaApi.Domain.Models.Manga;
 
 public class Mangas
 {
     [Key]
     public string? Id { get; set; }
     public string? Title { get; set; }
+    [NotMapped]
+    public IFormFile? MangaPhoto { get; set; }
     public List<TagsModel>? TagsModel { get; set; }
     public string? Author { get; set; }
     public string? Group { get; set; }

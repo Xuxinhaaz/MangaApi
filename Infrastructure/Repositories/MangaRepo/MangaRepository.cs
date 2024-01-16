@@ -1,6 +1,6 @@
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Data;
-using MangaApi.Domain.Models.Mangas;
+using MangaApi.Domain.Models.Manga;
 using MangaApi.Domain.Models.Tags;
 using MangaApi.Domain.Repositories.MangaRepo;
 using Microsoft.EntityFrameworkCore;
@@ -41,8 +41,25 @@ public class MangaRepository : IMangaRepository
         return mangasFounded;
     }
 
+    public async Task<List<Mangas>> SearchManga(string search, int pageNumber)
+    {
+        var listOfMangaFound = await _context.Mangas
+            .Skip(pageNumber * 5)
+            .Take(5)
+            .Where(x => x.Title.ToLower() == search.ToLower())
+            .ToListAsync();
+
+        return listOfMangaFound;
+    }
+
     public Mangas Generate(MangasViewModel model)
     {
+        var filePath = Path.Combine("Storage", model.MangaPhoto.FileName);
+        
+        using Stream fileStream = new FileStream(filePath, FileMode.Create);
+        
+        model.MangaPhoto.CopyTo(fileStream);
+            
         var newManga = new Mangas()
         {
             Popularity = 0,
@@ -52,8 +69,9 @@ public class MangaRepository : IMangaRepository
             Description = model.Description,
             Group = model.Group,
             Translation = model.Translation
+            
         };
-
+        
         newManga.TagsModel = model.Tags.Select(tag => new TagsModel()
         {
             MangaId = newManga.Id,
@@ -70,5 +88,18 @@ public class MangaRepository : IMangaRepository
         await _context.Tags.AddRangeAsync(model.TagsModel);
         await _context.SaveChangesAsync();
     }
-    
+
+    public async Task<bool> AnyMangaTitle(Mangas model)
+    {
+        var anyManga = await _context.Mangas.AnyAsync(x => x.Title == model.Title);
+
+        return anyManga;
+    }
+
+    public async Task<bool> AnyManga(string id)
+    {
+        var anyManga = await _context.Mangas.AnyAsync(x => x.Id == id);
+
+        return anyManga;
+    }
 }

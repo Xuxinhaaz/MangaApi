@@ -1,7 +1,7 @@
 using FluentValidation;
 using MangaApi.Application.ViewModels.MangasViewModel;
 
-namespace MangaApi.Application.Services.Validators.ModelsValidator.Mangas;
+namespace MangaApi.Infrastructure.Services.Validator.ModelsValidator.Mangas;
 
 public class MangaViewModelValidator : AbstractValidator<MangasViewModel>
 {
