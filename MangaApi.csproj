@@ -10,20 +10,22 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="FluentValidation" Version="11.9.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Domain\Models\Animes\" />
-      <Folder Include="Presentation\" />
-      <Folder Include="Storage\MangaPages\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +35,9 @@
       <None Remove="Domain\Models\Mangakas\**" />
       <None Remove="Storage\MangaPages\Jujustu Kaisen\**" />
       <None Remove="Storage\Captura de tela 2024-01-11 010055.png" />
+      <None Remove="Storage\**" />
+      <None Remove="Manga Api\**" />
+      <None Remove="Application\Common\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -43,6 +48,9 @@
       <Compile Remove="Presentation\Controllers\Mangas\IMangaController.cs" />
       <Compile Remove="Storage\MangaPages\Jujustu Kaisen\**" />
       <Compile Remove="Presentation\ViewModels\MangasViewModel\PagesViewModel\CollectionPagesViewModel.cs" />
+      <Compile Remove="Storage\**" />
+      <Compile Remove="Manga Api\**" />
+      <Compile Remove="Application\Common\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -50,6 +58,9 @@
       <EmbeddedResource Remove="Controllers\Mangakas\**" />
       <EmbeddedResource Remove="Domain\Models\Mangakas\**" />
       <EmbeddedResource Remove="Storage\MangaPages\Jujustu Kaisen\**" />
+      <EmbeddedResource Remove="Storage\**" />
+      <EmbeddedResource Remove="Manga Api\**" />
+      <EmbeddedResource Remove="Application\Common\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -57,6 +68,13 @@
       <Content Remove="Controllers\Mangakas\**" />
       <Content Remove="Domain\Models\Mangakas\**" />
       <Content Remove="Storage\MangaPages\Jujustu Kaisen\**" />
+      <Content Remove="Storage\**" />
+      <Content Remove="Manga Api\**" />
+      <Content Remove="Application\Common\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Manga Api\bruno.json" />
     </ItemGroup>
 
 </Project>

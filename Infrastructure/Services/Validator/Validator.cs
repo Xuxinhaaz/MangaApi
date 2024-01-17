@@ -1,5 +1,5 @@
 using FluentValidation.Results;
-using MangaApi.Application.Services.Validators;
+using MangaApi.Application.Common.Services.Validators;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
 using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Mangas;

@@ -1,5 +1,6 @@
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Models.Manga;
+using MangaApi.Presentation.Dtos.MangasDto;
 
 namespace MangaApi.Domain.Repositories.MangaRepo;
 
@@ -13,4 +14,6 @@ public interface IMangaRepository
     Task AddManga(Mangas model);
     Task<bool> AnyMangaTitle(Mangas model);
     Task<bool> AnyManga(string id);
+    MangaDto MapEntity(Mangas model);
+    List<MangaDto> MapEntities(List<Mangas> models);
 }

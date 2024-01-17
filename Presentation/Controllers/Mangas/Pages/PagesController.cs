@@ -4,20 +4,21 @@ using MangaApi.Domain.Data;
 using MangaApi.Domain.Repositories.MangaRepo;
 using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 using Microsoft.AspNetCore.Mvc;
+using IValidator = MangaApi.Application.Common.Services.Validators.IValidator;
 
 namespace MangaApi.Presentation.Controllers.Mangas.Pages;
 
 public class PagesController : ControllerBase
 {
     
-    private readonly Application.Services.Validators.IValidator _validator;
+    private readonly IValidator _validator;
     private readonly IPageRepository _pageRepository;
     private readonly AppDbContext _context;
     private readonly IMangaRepository _mangaRepository;
 
     public PagesController(
         IMangaRepository mangaRepository, 
-        Application.Services.Validators.IValidator validator, 
+        IValidator validator, 
         IPageRepository pageRepository,
         AppDbContext context)
     {

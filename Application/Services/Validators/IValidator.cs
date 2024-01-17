@@ -2,7 +2,7 @@ using FluentValidation.Results;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
 
-namespace MangaApi.Application.Services.Validators;
+namespace MangaApi.Application.Common.Services.Validators;
 
 public interface IValidator
 {

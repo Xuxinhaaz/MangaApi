@@ -1,5 +1,5 @@
 using FluentValidation.Results;
-using MangaApi.Application.Services.Validators;
+using MangaApi.Application.Common.Services.Validators;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Repositories.MangaRepo;
@@ -73,7 +73,7 @@ public class MangaController
     }
 
     [HttpGet("/api/v1/Manga/Tag")] 
-    public Task<IActionResult> MangasTagGet(string authorization)
+    public Task<IActionResult> MangasTagGet( [FromBody] List<string> tags)
     {
         throw new NotImplementedException();
     }

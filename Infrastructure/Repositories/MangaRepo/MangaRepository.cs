@@ -1,8 +1,10 @@
+using AutoMapper;
 using MangaApi.Application.ViewModels.MangasViewModel;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Models.Manga;
 using MangaApi.Domain.Models.Tags;
 using MangaApi.Domain.Repositories.MangaRepo;
+using MangaApi.Presentation.Dtos.MangasDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace MangaApi.Infrastructure.Repositories.MangaRepo;
@@ -10,10 +12,12 @@ namespace MangaApi.Infrastructure.Repositories.MangaRepo;
 public class MangaRepository : IMangaRepository
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
     
-    public MangaRepository(AppDbContext context)
+    public MangaRepository(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<List<Mangas>> GetMangas()
@@ -101,5 +105,19 @@ public class MangaRepository : IMangaRepository
         var anyManga = await _context.Mangas.AnyAsync(x => x.Id == id);
 
         return anyManga;
+    }
+
+    public MangaDto MapEntity(Mangas model)
+    {
+        var mangaDto = _mapper.Map<MangaDto>(model);
+
+        return mangaDto;
+    }
+
+    public List<MangaDto> MapEntities(List<Mangas> models)
+    {
+        var listOfDTOs = _mapper.Map<List<MangaDto>>(models);
+
+        return listOfDTOs;
     }
 }
