@@ -36,13 +36,28 @@ public class MangaRepository : IMangaRepository
             .FirstAsync(x => x.Id == id);
     }
 
-    public async Task<List<Mangas>> FilterMangasByTag(string tag)
+    public async Task<List<Mangas>> FilterMangasByTag(string tag, int pageNumber)
     {
         List<Mangas> mangasFounded = await _context.Mangas
+            .Skip(pageNumber * 5)
+            .Take(5)
             .Where(model => model.TagsModel.Any(tagsModel => tagsModel.Tag == tag))
+            .Include(m => m.TagsModel)
             .ToListAsync();
 
         return mangasFounded;
+    }
+
+    public async Task<List<Mangas>> GetMangasByListOfTags(List<string> tags, int pageNumber)
+    {
+        var mangasFound = await _context.Mangas
+            .Skip(pageNumber * 5)
+            .Take(5)
+            .Include(m => m.TagsModel)
+            .Where(m => tags.All(t => m.TagsModel.Any(mt => mt.Tag.ToLower() == t.ToLower())))
+            .ToListAsync();
+
+        return mangasFound;
     }
 
     public async Task<List<Mangas>> SearchManga(string search, int pageNumber)
@@ -50,7 +65,8 @@ public class MangaRepository : IMangaRepository
         var listOfMangaFound = await _context.Mangas
             .Skip(pageNumber * 5)
             .Take(5)
-            .Where(x => x.Title.ToLower() == search.ToLower())
+            .Include(m => m.TagsModel)
+            .Where(x => x.Title.Contains(search))
             .ToListAsync();
 
         return listOfMangaFound;
@@ -58,7 +74,7 @@ public class MangaRepository : IMangaRepository
 
     public Mangas Generate(MangasViewModel model)
     {
-        var filePath = Path.Combine("Storage", model.MangaPhoto.FileName);
+        var filePath = Path.Combine("Storage", "MangasPhoto", model.MangaPhoto.FileName);
         
         using Stream fileStream = new FileStream(filePath, FileMode.Create);
         
@@ -73,7 +89,6 @@ public class MangaRepository : IMangaRepository
             Description = model.Description,
             Group = model.Group,
             Translation = model.Translation
-            
         };
         
         newManga.TagsModel = model.Tags.Select(tag => new TagsModel()
@@ -93,7 +108,7 @@ public class MangaRepository : IMangaRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> AnyMangaTitle(Mangas model)
+    public async Task<bool> AnyMangaTitle(MangasViewModel model)
     {
         var anyManga = await _context.Mangas.AnyAsync(x => x.Title == model.Title);
 

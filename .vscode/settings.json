@@ -1,0 +1,24 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "obj": true,
+    "Properties": true,
+    "bin": true,
+    ".vscode": true,
+    ".idea": true,
+    "Manga Api": true
+  },
+  "hide-files.files": [
+    "obj",
+    "Properties",
+    "bin",
+    ".vscode",
+    ".idea",
+    "Manga Api"
+  ]
+}

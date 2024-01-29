@@ -1,22 +1,22 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using MangaApi.Application.Authentication;
 using MangaApi.Presentation.ViewModels.UsersViewModel;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MangaApi.Infrastructure.Authentication;
+namespace MangaApi.Application.Authentication.TokenGenerator;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly IConfiguration _configuration;
+    private IJwtTokenGenerator _jwtTokenGeneratorImplementation;
 
     public JwtTokenGenerator(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public string Generate(UsersViewModel model)
+    public string Generate(UsersViewModel? model)
     {
         var JWTKey = _configuration["JWT:Key"];
         
@@ -28,9 +28,9 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(ClaimTypes.Email, model.UserEmail),
         });
         
-        foreach (var roles in model.UserRoles)
+        foreach (var role in model.UserRoles)
         {
-            claims.AddClaim(new Claim(ClaimTypes.Role, roles));
+            claims.AddClaim(new Claim(ClaimTypes.Role, role));
         }
 
         var tokenDescriptor = new SecurityTokenDescriptor()
@@ -48,4 +48,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
          return strToken;
     }
+
+   
 }

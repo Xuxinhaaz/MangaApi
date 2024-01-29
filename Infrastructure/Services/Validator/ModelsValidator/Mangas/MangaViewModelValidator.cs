@@ -1,5 +1,6 @@
 using FluentValidation;
 using MangaApi.Application.ViewModels.MangasViewModel;
+using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Pages.IFormFileValidator;
 
 namespace MangaApi.Infrastructure.Services.Validator.ModelsValidator.Mangas;
 
@@ -36,5 +37,6 @@ public class MangaViewModelValidator : AbstractValidator<MangasViewModel>
             .NotNull().WithMessage("Translation cannot be null.")
             .MinimumLength(5).WithMessage("Translation must be at least 5 characters.")
             .MaximumLength(20).WithMessage("Translation cannot exceed 20 characters.");
+
     }    
 }

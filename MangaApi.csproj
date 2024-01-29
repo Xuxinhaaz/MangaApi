@@ -12,7 +12,9 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="12.0.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
         <PackageReference Include="FluentValidation" Version="11.9.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -26,6 +28,7 @@
 
     <ItemGroup>
       <Folder Include="Domain\Models\Animes\" />
+      <Folder Include="Storage\MangasPhoto\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,9 +38,10 @@
       <None Remove="Domain\Models\Mangakas\**" />
       <None Remove="Storage\MangaPages\Jujustu Kaisen\**" />
       <None Remove="Storage\Captura de tela 2024-01-11 010055.png" />
-      <None Remove="Storage\**" />
       <None Remove="Manga Api\**" />
       <None Remove="Application\Common\**" />
+      <None Remove="Infrastructure\Common\**" />
+      <None Remove="Infrastructure\Authentication\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,9 +52,11 @@
       <Compile Remove="Presentation\Controllers\Mangas\IMangaController.cs" />
       <Compile Remove="Storage\MangaPages\Jujustu Kaisen\**" />
       <Compile Remove="Presentation\ViewModels\MangasViewModel\PagesViewModel\CollectionPagesViewModel.cs" />
-      <Compile Remove="Storage\**" />
       <Compile Remove="Manga Api\**" />
       <Compile Remove="Application\Common\**" />
+      <Compile Remove="Infrastructure\Common\**" />
+      <Compile Remove="Infrastructure\Services\Validator\Validator.cs" />
+      <Compile Remove="Infrastructure\Authentication\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -58,9 +64,10 @@
       <EmbeddedResource Remove="Controllers\Mangakas\**" />
       <EmbeddedResource Remove="Domain\Models\Mangakas\**" />
       <EmbeddedResource Remove="Storage\MangaPages\Jujustu Kaisen\**" />
-      <EmbeddedResource Remove="Storage\**" />
       <EmbeddedResource Remove="Manga Api\**" />
       <EmbeddedResource Remove="Application\Common\**" />
+      <EmbeddedResource Remove="Infrastructure\Common\**" />
+      <EmbeddedResource Remove="Infrastructure\Authentication\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -68,9 +75,10 @@
       <Content Remove="Controllers\Mangakas\**" />
       <Content Remove="Domain\Models\Mangakas\**" />
       <Content Remove="Storage\MangaPages\Jujustu Kaisen\**" />
-      <Content Remove="Storage\**" />
       <Content Remove="Manga Api\**" />
       <Content Remove="Application\Common\**" />
+      <Content Remove="Infrastructure\Common\**" />
+      <Content Remove="Infrastructure\Authentication\**" />
     </ItemGroup>
 
     <ItemGroup>

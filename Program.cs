@@ -1,7 +1,9 @@
 using System.Text;
 using MangaApi.Application;
 using MangaApi.Application.Mapping.MangaMapping;
+using MangaApi.Application.Mapping.UserMapping;
 using MangaApi.Domain.Data;
+using MangaApi.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +34,7 @@ builder.Services.AddAplication();
 builder.Services.AddInfrastructure();
 
 builder.Services.AddAutoMapper(typeof(DomainToMangaDto));
+builder.Services.AddAutoMapper(typeof(DomainToUserDto));
 
 builder.Services.AddLogging(x => x.AddConsole());
 

@@ -1,30 +1,31 @@
 using FluentValidation;
+using FluentValidation.Results;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Repositories.MangaRepo;
 using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 using Microsoft.AspNetCore.Mvc;
-using IValidator = MangaApi.Application.Common.Services.Validators.IValidator;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MangaApi.Presentation.Controllers.Mangas.Pages;
 
 public class PagesController : ControllerBase
 {
-    
-    private readonly IValidator _validator;
+    private readonly IValidator<CollectionPageViewModel> _collectionPageValidator;
+    private readonly IValidator<CollectionPagesPhotosViewModel> _collectionPagePhotosValidator;
     private readonly IPageRepository _pageRepository;
-    private readonly AppDbContext _context;
     private readonly IMangaRepository _mangaRepository;
 
     public PagesController(
         IMangaRepository mangaRepository, 
-        IValidator validator, 
         IPageRepository pageRepository,
-        AppDbContext context)
+        IValidator<CollectionPageViewModel> collectionPageValidator, 
+        IValidator<CollectionPagesPhotosViewModel> collectionPagePhotosValidator
+        )
     {
-        _validator = validator;
         _pageRepository = pageRepository;
-        _context = context;
+        _collectionPageValidator = collectionPageValidator;
+        _collectionPagePhotosValidator = collectionPagePhotosValidator; 
         _mangaRepository = mangaRepository;
     }
     
@@ -60,12 +61,20 @@ public class PagesController : ControllerBase
     [HttpPost("/api/v1/Manga/Pages/{id}")]
     public async Task<IActionResult> MangaPagesPost([FromRoute] string id, [FromBody] CollectionPageViewModel model)
     {
-        if (string.IsNullOrEmpty(id))
-            return new BadRequestObjectResult("Id must not be empty");
+        ValidationResult validationResult = await _collectionPageValidator.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            var modelStateDictionary = new ModelStateDictionary();
+            foreach (ValidationFailure validationFailure in validationResult.Errors)
+            {
+                modelStateDictionary.AddModelError(validationFailure.PropertyName, validationFailure.ErrorMessage);
+            }
 
-        var responseValidator = await _validator.ValidateCollectionPagesViewModel(model);
-        if (!responseValidator.IsValid)
-            return BadRequest(responseValidator.Errors.ToList());
+            return new BadRequestObjectResult(new
+            {
+                errors = modelStateDictionary
+            });
+        }
         
         var anyMangaCollectionPage = await _pageRepository.AnyMangaCollectionPageByid(id);
         var anyMangaPage = await _pageRepository.AnyMangaPageByid(id);
@@ -82,10 +91,25 @@ public class PagesController : ControllerBase
     }
     
     [HttpPost("/api/v1/Manga/Pages/Photos/{id}")]
-    public async Task<IActionResult> MangaPagesPost([FromRoute] string id, [FromForm] CollectionPagesPhotosViewModel model)
+    public async Task<IActionResult> MangaPagesPhotoPost([FromRoute] string id, [FromForm] CollectionPagesPhotosViewModel model)
     {
         if (string.IsNullOrEmpty(id))
             return new BadRequestObjectResult("Id must not be empty");
+        
+        ValidationResult validationResult = await _collectionPagePhotosValidator.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            var modelStateDictionary = new ModelStateDictionary();
+            foreach (ValidationFailure validationFailure in validationResult.Errors)
+            {
+                modelStateDictionary.AddModelError(validationFailure.PropertyName, validationFailure.ErrorMessage);
+            }
+
+            return new BadRequestObjectResult(new
+            {
+                errors = modelStateDictionary
+            });
+        }
         
         var fulManga = await _mangaRepository.GetMangaById(id);
         var anyMangaPages = await _pageRepository.AnyMangaCollectionPageByid(id);
