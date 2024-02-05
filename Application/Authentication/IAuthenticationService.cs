@@ -6,5 +6,5 @@ namespace MangaApi.Application.Authentication;
 public interface IAuthenticationService
 {
     Task<UserDto> Register(UsersViewModel model);
-    Task<UserDto> LogIn(UsersViewModel model);
+    Task<bool> LogIn(UsersLogInViewModel model);
 }

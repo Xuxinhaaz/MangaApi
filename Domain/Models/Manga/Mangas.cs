@@ -15,7 +15,7 @@ public class Mangas
     public string? Author { get; set; }
     public string? Group { get; set; }
     public string? Translation { get; set; }
-    public CollectionPage? CollectionPage { get; set; }
+    public List<CollectionPage>? Chapters { get; set; }
     public string? Description { get; set; }
     public int? Popularity { get; set; }
 }

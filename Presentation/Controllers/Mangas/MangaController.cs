@@ -35,8 +35,20 @@ public class MangaController
     }
 
     [HttpGet("/api/v1/Mangas")]
-    public async Task<IActionResult> MangasGet([FromHeader] string authorization)
+    public async Task<IActionResult> MangasGet([FromHeader] string Authorization)
     {
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
+        
         var Mangas = await _mangaRepository.GetMangas();
         var MangasDtos = _mangaRepository.MapEntities(Mangas);
 
@@ -52,20 +64,32 @@ public class MangaController
         if (string.IsNullOrEmpty(id))
             return new BadRequestObjectResult(new
             {
-                errors = "id cannot be null."
+                errors = new
+                {
+                    message = "id cannot be null."
+                }
             });
 
         var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
         if (!responseAuth.IsValid)
         {
-            return new UnauthorizedResult();
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
         }
 
         var anyManga = await _mangaRepository.AnyManga(id);
         if (!anyManga)
             return new BadRequestObjectResult(new
             {
-                errors = "Manga with provided ID does not exist."
+                errors = new
+                {
+                    message = "Manga with provided ID does not exist."
+                }
             });
 
         var manga = await _mangaRepository.GetMangaById(id);
@@ -78,10 +102,22 @@ public class MangaController
     }
 
     [HttpGet("/api/v1/Mangas/Tag")]
-    public async Task<IActionResult> MangaTagsFilterByOneTag([FromQuery] string tag, [FromQuery] int pageNumber)
+    public async Task<IActionResult> MangaTagsFilterByOneTag([FromQuery] string tag, [FromQuery] int pageNumber,[FromHeader] string Authorization)
     {
         if (string.IsNullOrEmpty(tag))
             return new BadRequestObjectResult("tag must not be empty!");
+        
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
 
         var mangasFiltered = await _mangaRepository.FilterMangasByTag(tag, pageNumber);
         if (mangasFiltered.Count == 0)
@@ -100,8 +136,20 @@ public class MangaController
     }
 
     [HttpPost("/api/v1/Mangas/Tags")]
-    public async Task<IActionResult> MangasTagGet([FromBody] List<string> tags, [FromQuery] int pageNumber)
+    public async Task<IActionResult> MangasTagGet([FromBody] List<string> tags, [FromQuery] int pageNumber, [FromHeader] string Authorization)
     {
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
+        
         var mangaFound = await _mangaRepository.GetMangasByListOfTags(tags, pageNumber);
         var mangaDto = _mangaRepository.MapEntities(mangaFound);
 
@@ -114,6 +162,18 @@ public class MangaController
     [HttpPost("/api/v1/Mangas")]
     public async Task<IActionResult> MangaPost([FromForm] MangasViewModel model)
     {
+        // var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        // if (!responseAuth.IsValid)
+        // {
+        //     return new UnauthorizedObjectResult(new
+        //     {
+        //         erros = new
+        //         {
+        //             message = "Invalid authentication credentials."
+        //         }
+        //     });
+        // }
+        
         ValidationResult validationResult = await _mangaValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
@@ -148,13 +208,25 @@ public class MangaController
 
     [HttpPost("/api/v1/Mangas/Search")]
     public async Task<IActionResult> MangaSearch(
-        [FromHeader] string authorization,
+        [FromHeader] string Authorization,
         [FromQuery] string search,
         [FromQuery] int pageNumber
         )
     {
         if (string.IsNullOrEmpty(search))
             return new BadRequestObjectResult("search param must not be empty.");
+        
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
 
         var mangasFound = await _mangaRepository.SearchManga(search, pageNumber);
         var mangasDto = _mangaRepository.MapEntities(mangasFound);

@@ -50,18 +50,27 @@ public class UsersRepository : IUserRepository
 
     public async Task<bool> LogInProcess(UsersLogInViewModel model)
     {
-        var anyEmail = await _context.Users
-            .AnyAsync(x => x.UserEmail == model.Email);
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.UserEmail == model.Email);
 
-        var anyPassword = await _context.Users
-            .AnyAsync(x => VerifyPassword(model.Password, x.UserPassword));
-        
-        return anyEmail && anyPassword;
+        if (user == null)
+        {
+            return false; 
+        }
+
+        return VerifyPassword(model.Password, user.UserPassword);
     }
     
     private static bool VerifyPassword(string inputPassword, string hashedPassword)
     {
         return BCrypt.Net.BCrypt.Verify(inputPassword, hashedPassword);
+    }
+
+    public async Task<UserModel> FindUserInLogInProcess(UsersLogInViewModel model)
+    {
+        var userFound = await _context.Users.FirstAsync(x => x.UserEmail == model.Email);
+
+        return userFound;
     }
 
     public async Task<bool> AnyUserName(UsersViewModel model)
@@ -79,7 +88,7 @@ public class UsersRepository : IUserRepository
         return _mapper.Map<UserDto>(model);
     }
 
-    public List<UserDto> MapEntity(List<UserModel> model)
+    public List<UserDto> MapEntities(List<UserModel> model)
     {
         return _mapper.Map<List<UserDto>>(model);
     }
@@ -89,5 +98,5 @@ public class UsersRepository : IUserRepository
         await _context.Users.AddAsync(model);
         await _context.SaveChangesAsync();
     }
-    
+
 }

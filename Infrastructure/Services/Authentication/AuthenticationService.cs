@@ -40,8 +40,10 @@ public class AuthenticationService : IAuthenticationService
         return mangaDto;
     }
 
-    public async Task<UserDto> LogIn(UsersViewModel model)
+    public async Task<bool> LogIn(UsersLogInViewModel model)
     {
-        throw new NotImplementedException();
+        var isLoggedIn = await _userRepository.LogInProcess(model);
+        
+        return isLoggedIn;
     }
 }

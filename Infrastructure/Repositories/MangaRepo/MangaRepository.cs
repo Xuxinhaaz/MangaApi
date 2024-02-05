@@ -24,7 +24,7 @@ public class MangaRepository : IMangaRepository
     {
         return await _context.Mangas
             .Include(m=> m.TagsModel)
-            .Include(m => m.CollectionPage)
+            .Include(m => m.Chapters)
             .ToListAsync();
     }
 
@@ -32,7 +32,7 @@ public class MangaRepository : IMangaRepository
     {
         return await _context.Mangas
             .Include(m => m.TagsModel)
-            .Include(m => m.CollectionPage)
+            .Include(m => m.Chapters)
             .FirstAsync(x => x.Id == id);
     }
 
@@ -82,6 +82,7 @@ public class MangaRepository : IMangaRepository
             
         var newManga = new Mangas()
         {
+            Chapters = new List<CollectionPage>(),
             Popularity = 0,
             Id = Guid.NewGuid().ToString(),
             Title = model.Title,
@@ -105,6 +106,7 @@ public class MangaRepository : IMangaRepository
     {
         await _context.Mangas.AddAsync(model);
         await _context.Tags.AddRangeAsync(model.TagsModel);
+        await _context.CollectionPages.AddRangeAsync(model.Chapters);
         await _context.SaveChangesAsync();
     }
 

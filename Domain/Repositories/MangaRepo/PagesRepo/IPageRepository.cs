@@ -5,10 +5,10 @@ namespace MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 
 public interface IPageRepository
 {
-    Task<List<PageModel>> GetPages(string id);
+    Task<CollectionPage> GetChapter(string id);
     Task<PageModel> GetPageById(string id);
     Task<Mangas> GeneratePages(CollectionPageViewModel model, string id);
     Task GeneratePagesPhotos(CollectionPagesPhotosViewModel model, string id);
-    Task<bool> AnyMangaPageByid(string id);
     Task<bool> AnyMangaCollectionPageByid(string id);
+    Task Add(Mangas model);
 }

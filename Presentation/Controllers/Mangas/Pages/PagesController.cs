@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
+using MangaApi.Application.Authentication.TokenValidator;
 using MangaApi.Application.ViewModels.MangasViewModel.PagesViewModel;
 using MangaApi.Domain.Data;
 using MangaApi.Domain.Repositories.MangaRepo;
@@ -15,26 +16,39 @@ public class PagesController : ControllerBase
     private readonly IValidator<CollectionPagesPhotosViewModel> _collectionPagePhotosValidator;
     private readonly IPageRepository _pageRepository;
     private readonly IMangaRepository _mangaRepository;
+    private readonly ITokenValidator _tokenValidator;
 
     public PagesController(
         IMangaRepository mangaRepository, 
         IPageRepository pageRepository,
         IValidator<CollectionPageViewModel> collectionPageValidator, 
-        IValidator<CollectionPagesPhotosViewModel> collectionPagePhotosValidator
-        )
+        IValidator<CollectionPagesPhotosViewModel> collectionPagePhotosValidator, ITokenValidator tokenValidator)
     {
         _pageRepository = pageRepository;
         _collectionPageValidator = collectionPageValidator;
-        _collectionPagePhotosValidator = collectionPagePhotosValidator; 
+        _collectionPagePhotosValidator = collectionPagePhotosValidator;
+        _tokenValidator = tokenValidator;
         _mangaRepository = mangaRepository;
     }
     
     
     [HttpGet("/api/v1/Manga/Page/{id}")]
-    public async Task<IActionResult> MangaPageById( [FromRoute] string id )
+    public async Task<IActionResult> GetMangaPageById( [FromRoute] string id, [FromHeader] string Authorization)
     {
         if (string.IsNullOrEmpty(id))
             return new BadRequestObjectResult("Id must not be empty");
+        
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
         
         return new OkObjectResult(new
         {
@@ -43,24 +57,51 @@ public class PagesController : ControllerBase
     }
     
     [HttpGet("/api/v1/Manga/Pages/{id}")]
-    public async Task<IActionResult> MangaPages( [FromRoute] string id )
+    public async Task<IActionResult> GetMangaChapter( [FromRoute] string id, [FromHeader] string Authorization)
     {
         if (string.IsNullOrEmpty(id))
             return new BadRequestObjectResult("Id must not be empty");
         
-        bool anyMangaCollectionPageById = await _pageRepository.AnyMangaCollectionPageByid(id);
-        if (!anyMangaCollectionPageById)
-            return BadRequest("No mangas found with provided ID.");
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
+        
+        bool anyChapter = await _pageRepository.AnyMangaCollectionPageByid(id);
+        if (!anyChapter)
+            return BadRequest("No chapter found.");
         
         return new OkObjectResult(new
         {
-            pages = await _pageRepository.GetPages(id)
+            pages = await _pageRepository.GetChapter(id)
         });
     }
     
     [HttpPost("/api/v1/Manga/Pages/{id}")]
-    public async Task<IActionResult> MangaPagesPost([FromRoute] string id, [FromBody] CollectionPageViewModel model)
+    public async Task<IActionResult> PostMangaChapter(
+        [FromRoute] string id, 
+        [FromBody] CollectionPageViewModel model, 
+        [FromHeader] string Authorization)
     {
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
+        
         ValidationResult validationResult = await _collectionPageValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
@@ -77,24 +118,38 @@ public class PagesController : ControllerBase
         }
         
         var anyMangaCollectionPage = await _pageRepository.AnyMangaCollectionPageByid(id);
-        var anyMangaPage = await _pageRepository.AnyMangaPageByid(id);
         var anyManga = await _mangaRepository.AnyManga(id);
-        if (anyMangaCollectionPage || anyMangaPage || !anyManga) 
+        if (anyMangaCollectionPage || !anyManga) 
             return BadRequest("Manga page with this id already exists.");
 
         Domain.Models.Manga.Mangas fulManga = await _pageRepository.GeneratePages(model, id);
         
         return new OkObjectResult(new
         {
-            pages = fulManga.CollectionPage
+            pages = fulManga.Chapters
         });
     }
     
     [HttpPost("/api/v1/Manga/Pages/Photos/{id}")]
-    public async Task<IActionResult> MangaPagesPhotoPost([FromRoute] string id, [FromForm] CollectionPagesPhotosViewModel model)
+    public async Task<IActionResult> MangaPagesPhotoPost(
+        [FromRoute] string id, 
+        [FromForm] CollectionPagesPhotosViewModel model, 
+        [FromHeader] string Authorization)
     {
         if (string.IsNullOrEmpty(id))
             return new BadRequestObjectResult("Id must not be empty");
+        
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
         
         ValidationResult validationResult = await _collectionPagePhotosValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
@@ -117,6 +172,7 @@ public class PagesController : ControllerBase
             return BadRequest("Manga must have a collection page.");
         
         await _pageRepository.GeneratePagesPhotos(model, id);
+        await _pageRepository.Add(fulManga);
         
         return new OkObjectResult(new
         {

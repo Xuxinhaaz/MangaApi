@@ -20,9 +20,9 @@ public static class DependencyInjectionInfrastructure
         Services.AddScoped<IValidator<CollectionPageViewModel>, CollectionViewModelValidator>();
         Services.AddScoped<IValidator<CollectionPagesPhotosViewModel>, FileValidator>();
         Services.AddScoped<IValidator<UsersViewModel>, UsersViewModelValidator>();
+        Services.AddScoped<IValidator<UsersLogInViewModel>, UsersLogInViewModelValidator>();
         
         Services.AddScoped<IAuthenticationService, AuthenticationService>();
-     
         return Services;
     }
 }

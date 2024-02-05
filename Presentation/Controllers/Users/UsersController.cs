@@ -14,20 +14,26 @@ namespace MangaApi.Presentation.Controllers.Users;
 [ApiController]
 public class UsersController : ControllerBase
 {
+    private readonly IJwtTokenGenerator _tokenGenerator;
+    private readonly IValidator<UsersLogInViewModel> _usersLogInValidator;
     private readonly IValidator<UsersViewModel> _usersValidator;
     private readonly IAuthenticationService _authenticationService;
     private readonly IUserRepository _userRepository;
     private readonly ITokenValidator _tokenValidator;
 
     public UsersController(IValidator<UsersViewModel> usersValidator,
-        IAuthenticationService authenticationService, 
-        IUserRepository userRepository, 
-        ITokenValidator tokenValidator)
+        IAuthenticationService authenticationService,
+        IUserRepository userRepository,
+        ITokenValidator tokenValidator,
+        IValidator<UsersLogInViewModel> usersLogInValidator,
+        IJwtTokenGenerator tokenGenerator)
     {
         _usersValidator = usersValidator;
         _authenticationService = authenticationService;
         _userRepository = userRepository;
         _tokenValidator = tokenValidator;
+        _usersLogInValidator = usersLogInValidator;
+        _tokenGenerator = tokenGenerator;
     }
 
     [HttpGet("/api/v1/GetUsers")]
@@ -57,7 +63,9 @@ public class UsersController : ControllerBase
                 modelStateDictionary.AddModelError(error.PropertyName, error.ErrorMessage);
             }
 
-            return BadRequest(modelStateDictionary);
+            return new BadRequestObjectResult(new {
+                errors = modelStateDictionary
+            });       
         }
 
         var user = await _authenticationService.Register(model);
@@ -69,14 +77,39 @@ public class UsersController : ControllerBase
     }
     
     [HttpPost("/api/v1/LogIn")]
-    public IActionResult LogIn( [FromBody] UsersViewModel model)
+    public async Task<IActionResult> LogIn( [FromBody] UsersLogInViewModel model)
     {
-        return new OkObjectResult(new
+        var validationResult = _usersLogInValidator.Validate(model);
+        if(!validationResult.IsValid)
         {
-            token = "Ola"
+            var modelStateDictionary = new ModelStateDictionary();
+
+            foreach (var item in validationResult.Errors)
+            {
+                modelStateDictionary.AddModelError(item.PropertyName, item.ErrorMessage);
+            }
+            return new BadRequestObjectResult(new {
+                errors = modelStateDictionary
+            });
+        }
+
+        var isLoggedIn = await _authenticationService.LogIn(model);
+        if(!isLoggedIn)
+        {
+            return new NotFoundObjectResult(new {
+                errors = "User not found!"
+            });
+        }
+
+        var userFound = await _userRepository.FindUserInLogInProcess(model);
+        var userFoundDto = _userRepository.MapEntity(userFound);
+
+        var jwtToken = _tokenGenerator.GenerateInLogInProcess(userFoundDto);
+
+        userFoundDto.Token = jwtToken;
+
+        return new OkObjectResult(new {
+            user = userFoundDto
         });
     }
-    
-    
-    
 }

@@ -10,9 +10,10 @@ public interface IUserRepository
     Task<UserModel> GetUserById(string id);
     UserModel Generate(UsersViewModel model);
     Task<bool> LogInProcess(UsersLogInViewModel model);
+    Task<UserModel> FindUserInLogInProcess(UsersLogInViewModel model);
     Task<bool> AnyUserName(UsersViewModel model);
     Task<bool> AnyUser(string id);
     UserDto MapEntity(UserModel model);
-    List<UserDto> MapEntity(List<UserModel> model);
+    List<UserDto> MapEntities(List<UserModel> model);
     Task AddToDb(UserModel model);
 }

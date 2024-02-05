@@ -9,6 +9,8 @@ public class CollectionPage
     public string? CollectionId { get; set; }
     [ForeignKey("Id")]
     public string? MangaId { get; set; }
+    public string? ChapterName { get; set; }
+    public string? chapterSummary { get; set; }
     public List<PageModel>? PageModels { get; set; }
 }
 public class PageModel

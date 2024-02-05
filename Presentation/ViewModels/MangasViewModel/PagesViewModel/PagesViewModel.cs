@@ -8,6 +8,8 @@ public class CollectionPagesPhotosViewModel
 
 public class CollectionPageViewModel
 {
+    public string? ChapterSummary { get; set; }
+    public string? ChapterName { get; set; }
     public List<PagesViewModel>? Models { get; set; }
 }
 
