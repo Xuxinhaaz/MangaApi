@@ -160,19 +160,19 @@ public class MangaController
     }
 
     [HttpPost("/api/v1/Mangas")]
-    public async Task<IActionResult> MangaPost([FromForm] MangasViewModel model)
+    public async Task<IActionResult> MangaPost([FromForm] MangasViewModel model, [FromHeader] string Authorization)
     {
-        // var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
-        // if (!responseAuth.IsValid)
-        // {
-        //     return new UnauthorizedObjectResult(new
-        //     {
-        //         erros = new
-        //         {
-        //             message = "Invalid authentication credentials."
-        //         }
-        //     });
-        // }
+        var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
+        if (!responseAuth.IsValid)
+        {
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
+        }
         
         ValidationResult validationResult = await _mangaValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
@@ -199,10 +199,14 @@ public class MangaController
 
         await _mangaRepository.AddManga(newManga);
 
-        return new OkObjectResult(new
-        {
-            manga = mangaDto
-        });
+        return new CreatedAtActionResult(
+            actionName: "MangaPost",
+            controllerName: "Manga",
+            routeValues: new { model, Authorization},
+            value: new
+            {
+                manga = mangaDto
+            });
     }
 
 

@@ -8,7 +8,9 @@ using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Mangas;
 using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Pages;
 using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Pages.IFormFileValidator;
 using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Users;
+using MangaApi.Infrastructure.Services.Validator.ModelsValidator.Users.UsersProfile;
 using MangaApi.Presentation.ViewModels.UsersViewModel;
+using MangaApi.Presentation.ViewModels.UsersViewModel.UsersProfileViewModel;
 
 namespace MangaApi.Infrastructure;
 
@@ -21,8 +23,10 @@ public static class DependencyInjectionInfrastructure
         Services.AddScoped<IValidator<CollectionPagesPhotosViewModel>, FileValidator>();
         Services.AddScoped<IValidator<UsersViewModel>, UsersViewModelValidator>();
         Services.AddScoped<IValidator<UsersLogInViewModel>, UsersLogInViewModelValidator>();
+        Services.AddScoped<IValidator<UsersProfileViewModel>, UsersProfileViewModelValidator>();
         
         Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        
         return Services;
     }
 }

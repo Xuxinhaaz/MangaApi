@@ -7,6 +7,7 @@ using MangaApi.Domain.Repositories.MangaRepo;
 using MangaApi.Domain.Repositories.MangaRepo.PagesRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace MangaApi.Presentation.Controllers.Mangas.Pages;
 
@@ -17,17 +18,19 @@ public class PagesController : ControllerBase
     private readonly IPageRepository _pageRepository;
     private readonly IMangaRepository _mangaRepository;
     private readonly ITokenValidator _tokenValidator;
+    private readonly AppDbContext _context;
 
     public PagesController(
         IMangaRepository mangaRepository, 
         IPageRepository pageRepository,
         IValidator<CollectionPageViewModel> collectionPageValidator, 
-        IValidator<CollectionPagesPhotosViewModel> collectionPagePhotosValidator, ITokenValidator tokenValidator)
+        IValidator<CollectionPagesPhotosViewModel> collectionPagePhotosValidator, ITokenValidator tokenValidator, AppDbContext context)
     {
         _pageRepository = pageRepository;
         _collectionPageValidator = collectionPageValidator;
         _collectionPagePhotosValidator = collectionPagePhotosValidator;
         _tokenValidator = tokenValidator;
+        _context = context;
         _mangaRepository = mangaRepository;
     }
     
@@ -123,11 +126,15 @@ public class PagesController : ControllerBase
             return BadRequest("Manga page with this id already exists.");
 
         Domain.Models.Manga.Mangas fulManga = await _pageRepository.GeneratePages(model, id);
-        
-        return new OkObjectResult(new
-        {
-            pages = fulManga.Chapters
-        });
+
+        return new CreatedAtActionResult(
+            actionName: "PostChapterPages",
+            controllerName: "Pages",
+            routeValues: new { id, model, Authorization},
+            value: new
+            {
+                Pages = fulManga.Chapters
+            });
     }
     
     [HttpPost("/api/v1/Manga/Pages/Photos/{id}")]
@@ -173,10 +180,25 @@ public class PagesController : ControllerBase
         
         await _pageRepository.GeneratePagesPhotos(model, id);
         await _pageRepository.Add(fulManga);
+
+        return new CreatedResult();
+    }
+
+    [HttpDelete("/api/v1/Mangas/Pages/DeleteMax")]
+    public async Task<IActionResult> DeleteMax()
+    {
+        var allPageModels = await _context.PageModels.ToListAsync();
+        var allCollectionPages = await _context.CollectionPages
+            .Include(m => m.PageModels)
+            .ToListAsync();
         
+        _context.PageModels.RemoveRange(allPageModels);
+        _context.CollectionPages.RemoveRange(allCollectionPages);
+        await _context.SaveChangesAsync();
+
         return new OkObjectResult(new
         {
-            pages = fulManga
+            message = "OK"
         });
     }
 

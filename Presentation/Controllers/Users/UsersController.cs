@@ -36,13 +36,19 @@ public class UsersController : ControllerBase
         _tokenGenerator = tokenGenerator;
     }
 
-    [HttpGet("/api/v1/GetUsers")]
+    [HttpGet("/api/v1/Users")]
     public async Task<IActionResult> GetUsers([FromHeader] string Authorization)
     {
         var responseAuth = await _tokenValidator.ValidateUsersJwt(Authorization);
         if (!responseAuth.IsValid)
         {
-            return Unauthorized();
+            return new UnauthorizedObjectResult(new
+            {
+                erros = new
+                {
+                    message = "Invalid authentication credentials."
+                }
+            });
         }
         
         return new OkObjectResult(new
@@ -70,10 +76,14 @@ public class UsersController : ControllerBase
 
         var user = await _authenticationService.Register(model);
 
-        return new OkObjectResult(new
-        {
-            user
-        });
+        return new CreatedAtActionResult(
+            actionName: "Register",
+            controllerName: "User",
+            routeValues: new { model },
+            value: new
+            {
+                user
+            });
     }
     
     [HttpPost("/api/v1/LogIn")]

@@ -2,6 +2,7 @@ using System.Text;
 using MangaApi.Application;
 using MangaApi.Application.Mapping.MangaMapping;
 using MangaApi.Application.Mapping.UserMapping;
+using MangaApi.Application.Mapping.UserMapping.UsersProfileMapping;
 using MangaApi.Domain.Data;
 using MangaApi.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +34,7 @@ builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(connectionString
 builder.Services.AddAplication();
 builder.Services.AddInfrastructure();
 
+builder.Services.AddAutoMapper(typeof(DomainToUsersProfileDto));
 builder.Services.AddAutoMapper(typeof(DomainToMangaDto));
 builder.Services.AddAutoMapper(typeof(DomainToUserDto));
 

@@ -24,7 +24,9 @@ public class UsersRepository : IUserRepository
 
     public async Task<List<UserModel>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users
+            .Include(m => m.UsersProfileModel)
+            .ToListAsync();
     }
 
     public async Task<UserModel> GetUserById(string id)
